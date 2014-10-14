@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# To run this script, enter this into your terminal:
+# bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
+
 
 echo 'Setting up Vox Media Middleman rig.'
 echo ''
