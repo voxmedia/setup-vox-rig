@@ -69,6 +69,6 @@ fi
 # display instructions
 echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
-echo '    middleman init -t voxmedia my-new-app'
+echo '    middleman init -T voxmedia my-new-app'
 echo ''
 echo 'Run this script again at any time to update your install.'
