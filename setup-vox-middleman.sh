@@ -64,6 +64,7 @@ if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
     echo 'Please add this to your .bash_profile or whatever you use...'
     echo '    export CHORUS_API_CLIENT_ID=24'
     echo ''
+    echo 'You must close your terminal session and open a new one before proceeding.'
 fi
 
 # display instructions
