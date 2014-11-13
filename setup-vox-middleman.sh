@@ -7,6 +7,8 @@ FAVORITE_RUBY=2.1.2
 echo 'Setting up Vox Media Middleman rig.'
 echo ''
 
+trap "exit 1" SIGINT;
+
 # make sure we have rbenv, and not rvm
 if hash rvm 2>/dev/null; then
   echo ''
@@ -25,11 +27,12 @@ if ! hash rbenv 2>/dev/null; then
 fi;
 
 # make sure bundler is configured properly
-if [ ! -f '~/.bundle/config' ]; then
+if [ ! -f ~/.bundle/config ]; then
   echo 'Missing bundler config, fixing now...'
   mkdir -p ~/.bundle
-  echo '---
-BUNDLE_PATH: ".bundle"' > ~/.bundle/config
+  echo "---
+BUNDLE_PATH: .bundle
+BUNDLE_BUILD__MYSQL: --with-mysql-config=`brew --prefix mysql`/bin/mysql_config" > ~/.bundle/config
 fi
 
 # make sure we have the correct ruby installed
@@ -105,6 +108,7 @@ if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
     echo ''
     echo 'You must close your terminal session and open a new one before proceeding.'
 fi
+
 # display instructions
 echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
