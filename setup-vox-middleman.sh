@@ -2,10 +2,49 @@
 #
 # To run this script, enter this into your terminal:
 # bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
-
+FAVORITE_RUBY=2.1.2
 
 echo 'Setting up Vox Media Middleman rig.'
 echo ''
+
+# make sure we have rbenv, and not rvm
+if hash rvm 2>/dev/null; then
+  echo ''
+  echo 'DANGER!!! DANGER!!!'
+  echo 'Please uninstall rvm in order to continue'
+  echo ''
+  exit 1
+fi
+
+if ! hash rbenv 2>/dev/null; then
+  echo ''
+  echo 'DANGER!!! DANGER!!!'
+  echo 'Please install rbenv in order to continue'
+  echo ''
+  exit 1
+fi;
+
+# make sure bundler is configured properly
+if [ ! -f '~/.bundle/config' ]; then
+  echo 'Missing bundler config, fixing now...'
+  mkdir -p ~/.bundle
+  echo '---
+BUNDLE_PATH: ".bundle"' > ~/.bundle/config
+fi
+
+# make sure we have the correct ruby installed
+if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
+  echo 'Update ruby-build'
+  brew update
+  brew upgrade ruby-build
+
+  echo 'Installing our favorite Ruby...'
+  rbenv install $FAVORITE_RUBY
+
+  echo 'Making sure we have bundler...'
+  rbenv shell $FAVORITE_RUBY
+  gem install bundle
+fi
 
 # install middleman
 echo 'Installing necessary gems...'
@@ -66,7 +105,6 @@ if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
     echo ''
     echo 'You must close your terminal session and open a new one before proceeding.'
 fi
-
 # display instructions
 echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
