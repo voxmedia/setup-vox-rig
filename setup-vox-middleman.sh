@@ -2,7 +2,7 @@
 #
 # To run this script, enter this into your terminal:
 # bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
-FAVORITE_RUBY=2.1.2
+FAVORITE_RUBY=2.1.5
 
 echo 'Setting up Vox Media Middleman rig.'
 echo ''
@@ -46,7 +46,7 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
 
   echo 'Making sure we have bundler...'
   rbenv shell $FAVORITE_RUBY
-  gem install bundle
+  gem install bundler
 fi
 
 # install middleman
