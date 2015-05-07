@@ -69,6 +69,10 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   gem install bundler
 fi
 
+# make sure rbenv permissions are sorted
+echo 'Fixing permissions...'
+sudo chown -R $USER $HOME/.rbenv
+
 # install middleman
 echo 'Installing necessary gems...'
 # download api client gem
@@ -131,10 +135,12 @@ echo ''
 
 # add api client id envvar
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
-    echo 'Please add this to your .bash_profile or whatever you use...'
+  export CHORUS_API_CLIENT_ID=24
+  echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
+  if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo 'Please add this to your shell profile config'
     echo '    export CHORUS_API_CLIENT_ID=24'
-    echo ''
-    echo 'You must close your terminal session and open a new one before proceeding.'
+  fi
 fi
 
 # display instructions
