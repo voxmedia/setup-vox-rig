@@ -26,35 +26,6 @@ if ! hash rbenv 2>/dev/null; then
   exit 1
 fi
 
-# make sure we don't have a .ruby-version in our home
-if [ -f ~/.ruby-version ]; then
-  echo ''
-  echo 'DANGER!!! DANGER!!!'
-  echo 'Found .ruby-version in your home dir.'
-  echo 'Run this to fix: rm ~/.ruby-version'
-  echo 'Set your default ruby to something > 2.1.'
-  echo 'Run this to set: rbenv global $FAVORITE_RUBY'
-  echo ''
-  exit 1
-fi
-
-if ! ruby --version|grep "2\.[123]\." >/dev/null; then
-  echo ''
-  echo 'DANGER!!! DANGER!!!'
-  echo "You'll need ruby 2.1 or higher to do stuff."
-  echo "Run this to fix: rbenv global $FAVORITE_RUBY"
-  echo ''
-  exit 1
-fi
-
-# make sure bundler is configured properly
-if [ ! -f ~/.bundle/config ]; then
-  echo 'Missing bundler config, fixing now...'
-  mkdir -p ~/.bundle
-  echo "---
-BUNDLE_PATH: .bundle" > ~/.bundle/config
-fi
-
 # make sure we have the correct ruby installed
 if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo 'Update ruby-build'
@@ -67,6 +38,25 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo 'Making sure we have bundler...'
   rbenv shell $FAVORITE_RUBY
   gem install bundler
+fi
+
+# make sure we don't have a .ruby-version in our home
+if [ -f ~/.ruby-version ]; then
+  echo 'Removing .ruby-version from your home dir.'
+  rm ~/.ruby-version
+fi
+
+if ! ruby --version|grep "2\.[123]\." >/dev/null; then
+  echo "Default ruby needs to be >2.1, setting it to $FAVORITE_RUBY"
+  rbenv global $FAVORITE_RUBY
+fi
+
+# make sure bundler is configured properly
+if [ ! -f ~/.bundle/config ]; then
+  echo 'Missing bundler config, fixing now...'
+  mkdir -p ~/.bundle
+  echo "---
+BUNDLE_PATH: .bundle" > ~/.bundle/config
 fi
 
 # make sure rbenv permissions are sorted
