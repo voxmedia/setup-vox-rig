@@ -134,6 +134,8 @@ if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
 fi
 
 # display instructions
+echo 'You must start a new terminal session for changes to take affect.'
+echo ''
 echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
 echo '    middleman init -T voxmedia my-new-app'
