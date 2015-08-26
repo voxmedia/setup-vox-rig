@@ -46,8 +46,8 @@ if [ -f ~/.ruby-version ]; then
   rm ~/.ruby-version
 fi
 
-if ! ruby --version|grep "2\.[123]\." >/dev/null; then
-  echo "Default ruby needs to be >2.1, setting it to $FAVORITE_RUBY"
+if ! ruby --version|grep "2\.[234]\." >/dev/null; then
+  echo "Default ruby needs to be >2.2, setting it to $FAVORITE_RUBY"
   rbenv global $FAVORITE_RUBY
 fi
 
