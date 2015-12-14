@@ -72,11 +72,11 @@ cd chorus_api_client-ruby
 gem build *gemspec
 
 if [ "$(rbenv global)" == "system" ]; then
-  sudo gem install middleman-google_drive
+  sudo gem install middleman-google_drive octokit
   # install api client gem
   sudo gem install *gem
 else
-  gem install middleman-google_drive
+  gem install middleman-google_drive octokit
   # install api client gem
   gem install *gem
 fi
