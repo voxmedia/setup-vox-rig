@@ -9,6 +9,18 @@ echo
 
 trap "exit 1" SIGINT;
 
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+if ! hash setup-vox-middleman 2>/dev/null; then
+  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
+  echo 'exec bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
+  chmod +x /usr/local/bin/setup-vox-middleman
+fi
+
 if ! xcode-select -p >/dev/null 2>&1; then
   echo About to install Xcode tools. Please follow the instructions in the popup
   xcode-select --install
@@ -21,15 +33,34 @@ if ! hash brew 2>/dev/null; then
   echo
   echo Installing brew...
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  brew install openssl git aspell image_magick launchrocket
+
+  echo 'export PATH=.bundle/bin:node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH' >> ~/.bash_profile
+  export PATH=.bundle/bin:node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+  brew install imagemagick --with-openexr --with-webp
+  brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python
   brew tap homebrew/versions
   brew install homebrew/versions/v8-315
-  brew cask install iterm2 xquartz
+  brew cask install iterm2 xquartz launchrocket gitx
+
+  echo "\n# Use github's utility in place of git"
+  echo 'alias git=hub' >> ~/.bash_profile
   echo
+else
+  echo Update brew...
+  brew update
+
+  if ! hash jq 2>/dev/null; then
+    brew install jq
+  fi
+
+  if ! hash hub 2>/dev/null; then
+    brew install hub
+    echo "\n# Use github's utility in place of git" >> ~/.bash_profile
+    echo 'alias git=hub' >> ~/.bash_profile
+  fi
 fi
 
-echo Update brew...
-brew update
 
 # make sure we have rbenv, and not rvm
 if hash rvm 2>/dev/null; then
@@ -42,9 +73,19 @@ fi
 
 if ! hash rbenv 2>/dev/null; then
   echo
-  echo 'Installing rbenv...'
+  echo Installing rbenv...
   brew install rbenv
-  exit 1
+  echo
+fi
+
+if [ ! -d ~/.rbenv ]; then
+  echo
+  echo Initialize rbenv...
+  rbenv init
+  eval "$(rbenv init -)"
+  echo "\n# Load rbenv stuff" >> ~/.bash_profile
+  echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+  echo
 fi
 
 # make sure we don't have a .ruby-version in our home
