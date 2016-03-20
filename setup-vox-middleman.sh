@@ -4,10 +4,27 @@
 # bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
 FAVORITE_RUBY=2.2.2
 
-echo 'Setting up Vox Media Middleman rig.'
-echo ''
+echo Setting up Vox Media Middleman rig.
+echo
 
 trap "exit 1" SIGINT;
+
+echo Make sure we have dev tools...
+xcode-select --install >/dev/null
+
+if ! hash brew 2>/dev/null; then
+  echo
+  echo Installing brew...
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  brew install openssl git aspell image_magick launchrocket
+  brew tap homebrew/versions
+  brew install homebrew/versions/v8-315
+  brew cask install iterm2 xquartz
+  echo
+fi
+
+echo Update brew...
+brew update
 
 # make sure we have rbenv, and not rvm
 if hash rvm 2>/dev/null; then
@@ -19,31 +36,31 @@ if hash rvm 2>/dev/null; then
 fi
 
 if ! hash rbenv 2>/dev/null; then
-  echo ''
-  echo 'DANGER!!! DANGER!!!'
-  echo 'Please install rbenv in order to continue'
-  echo ''
+  echo
+  echo 'Installing rbenv...'
+  brew install rbenv
   exit 1
-fi
-
-# make sure we have the correct ruby installed
-if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
-  echo 'Update ruby-build'
-  brew update
-  brew upgrade ruby-build
-
-  echo 'Installing our favorite Ruby...'
-  rbenv install $FAVORITE_RUBY
-
-  echo 'Making sure we have bundler...'
-  rbenv shell $FAVORITE_RUBY
-  gem install bundler
 fi
 
 # make sure we don't have a .ruby-version in our home
 if [ -f ~/.ruby-version ]; then
-  echo 'Removing .ruby-version from your home dir.'
+  echo
+  echo Found .ruby-version in your home dir, removing it...
   rm ~/.ruby-version
+fi
+
+# make sure we have the correct ruby installed
+if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
+  echo Update ruby-build
+  brew update
+  brew upgrade ruby-build
+
+  echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
+  rbenv install $FAVORITE_RUBY
+
+  echo Making sure we have bundler...
+  rbenv shell $FAVORITE_RUBY
+  gem install bundler
 fi
 
 if ! ruby --version|grep "2\.[234]\." >/dev/null; then
@@ -51,17 +68,23 @@ if ! ruby --version|grep "2\.[234]\." >/dev/null; then
   rbenv global $FAVORITE_RUBY
 fi
 
-# make sure bundler is configured properly
-if [ ! -f ~/.bundle/config ]; then
-  echo 'Missing bundler config, fixing now...'
-  mkdir -p ~/.bundle
-  echo "---
-BUNDLE_PATH: .bundle" > ~/.bundle/config
+if ! hash bundle 2>/dev/null; then
+  gem install bundler
 fi
+
+# make sure bundler is configured properly
+echo Configuring bundler...
+bundle config path '.bundle'
+bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
+bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
+bundle config build.libv8 "--with-system-v8"
+bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/include --with-ldflags=-L/usr/local/opt/v8-315/lib"
+bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
 
 # make sure rbenv permissions are sorted
 echo 'Fixing permissions...'
 sudo chown -R $USER $HOME/.rbenv
+sudo chown -R $USER /usr/local
 
 # install middleman
 echo 'Installing necessary gems...'
@@ -85,8 +108,8 @@ fi
 cd ~
 rm -Rf /tmp/chorus_api_client-ruby
 
-echo ''
-echo ''
+echo
+echo
 
 # setup client secrets
 if [ ! -f "~/.google_client_secrets.json" ]; then
@@ -98,8 +121,8 @@ if [ ! -f "~/.google_client_secrets.json" ]; then
     rm -Rf /tmp/vox-google-drive
 fi
 
-echo ''
-echo ''
+echo
+echo
 
 # setup .middleman if doesn't exist
 if [ ! -d ~/.middleman ]; then
@@ -120,8 +143,8 @@ else
     git clone git@github.com:voxmedia/voxmedia-middleman-template.git voxmedia
 fi
 
-echo ''
-echo ''
+echo
+echo
 
 # add api client id envvar
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
@@ -139,5 +162,5 @@ echo ''
 echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
 echo '    middleman init -T voxmedia my-new-app'
-echo ''
+echo
 echo 'Run this script again at any time to update your install.'
