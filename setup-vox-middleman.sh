@@ -9,8 +9,13 @@ echo
 
 trap "exit 1" SIGINT;
 
-echo Make sure we have dev tools...
-xcode-select --install >/dev/null
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo About to install Xcode tools. Please follow the instructions in the popup
+  xcode-select --install
+  echo
+  echo "Once you've completed the Xcode install, press any key to continue"
+  read -n 1 -s
+fi
 
 if ! hash brew 2>/dev/null; then
   echo
