@@ -88,7 +88,7 @@ if [ ! -d ~/.rbenv ]; then
   echo
 fi
 
-if which ruby = '/usr/bin/ruby'; then
+if "$(which ruby)" = '/usr/bin/ruby'; then
   eval "$(rbenv init -)"
 fi
 
