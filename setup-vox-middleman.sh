@@ -83,10 +83,13 @@ if [ ! -d ~/.rbenv ]; then
   echo
   echo Initialize rbenv...
   rbenv init
-  eval "$(rbenv init -)"
   echo "\n# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
   echo
+fi
+
+if which ruby = '/usr/bin/ruby'; then
+  eval "$(rbenv init -)"
 fi
 
 # make sure we don't have a .ruby-version in our home
