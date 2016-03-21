@@ -154,7 +154,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   exit 1
 fi
 
-if ! grep 'github.com' ~/.ssh/known_hosts; then
+if ! grep 'github.com' ~/.ssh/known_hosts >/dev/null; then
   ssh-keyscan github.com >> ~/.ssh/known_hosts
 fi
 
