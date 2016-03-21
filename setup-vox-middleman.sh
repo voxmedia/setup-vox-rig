@@ -63,6 +63,9 @@ if ! hash setup-vox-middleman 2>/dev/null; then
   echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
   echo 'exec bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
   chmod +x /usr/local/bin/setup-vox-middleman
+
+  echo
+  echo Added command setup-vox-middleman
 fi
 
 # make sure we have rbenv, and not rvm
@@ -141,9 +144,13 @@ sudo chown -R $USER /usr/local
 
 if [ ! -f ~/.ssh/id_rsa ]; then
   echo
+  echo
   echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access
   echo for both HTTPS and SSH. Instructions here:
   echo '  https://help.github.com/articles/set-up-git/#setting-up-git'
+  echo
+  echo After you setup github, please run setup-vox-middleman to finish
+  echo setting up your computer.
   exit 1
 fi
 
