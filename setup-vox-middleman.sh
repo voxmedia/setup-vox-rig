@@ -39,7 +39,8 @@ if ! hash brew 2>/dev/null; then
   brew install homebrew/versions/v8-315
   brew cask install iterm2 xquartz launchrocket gitx
 
-  echo "\n# Use github's utility in place of git"
+  echo
+  echo "# Use github's utility in place of git"
   echo 'alias git=hub' >> ~/.bash_profile
   echo
 else
@@ -52,7 +53,8 @@ else
 
   if ! hash hub 2>/dev/null; then
     brew install hub
-    echo "\n# Use github's utility in place of git" >> ~/.bash_profile
+    echo >> ~/.bash_profile
+    echo "# Use github's utility in place of git" >> ~/.bash_profile
     echo 'alias git=hub' >> ~/.bash_profile
   fi
 fi
@@ -83,7 +85,8 @@ if [ ! -d ~/.rbenv ]; then
   echo
   echo Initialize rbenv...
   rbenv init
-  echo "\n# Load rbenv stuff" >> ~/.bash_profile
+  echo >> ~/.bash_profile
+  echo "# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
   echo
 fi
