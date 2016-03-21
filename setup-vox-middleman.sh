@@ -4,6 +4,8 @@
 # bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
 FAVORITE_RUBY=2.2.2
 
+set -e
+
 echo Setting up Vox Media Middleman rig.
 echo
 
@@ -14,12 +16,6 @@ sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-if ! hash setup-vox-middleman 2>/dev/null; then
-  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
-  echo 'exec bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
-  chmod +x /usr/local/bin/setup-vox-middleman
-fi
 
 if ! xcode-select -p >/dev/null 2>&1; then
   echo About to install Xcode tools. Please follow the instructions in the popup
@@ -61,6 +57,11 @@ else
   fi
 fi
 
+if ! hash setup-vox-middleman 2>/dev/null; then
+  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
+  echo 'exec bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
+  chmod +x /usr/local/bin/setup-vox-middleman
+fi
 
 # make sure we have rbenv, and not rvm
 if hash rvm 2>/dev/null; then
@@ -209,4 +210,4 @@ echo 'You should be all set. To start a new editorial app, enter the following'
 echo 'and follow the instructions.'
 echo '    middleman init -T voxmedia my-new-app'
 echo
-echo 'Run this script again at any time to update your install.'
+echo 'Run setup-vox-middleman again at any time to update your install.'
