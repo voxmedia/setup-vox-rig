@@ -133,6 +133,18 @@ echo 'Fixing permissions...'
 sudo chown -R $USER $HOME/.rbenv
 sudo chown -R $USER /usr/local
 
+if [ ! -f ~/.ssh/id_rsa ]; then
+  echo
+  echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access for
+  echo both HTTPS and SSH. Instructions here:
+  echo   https://help.github.com/articles/set-up-git/#setting-up-git
+  exit 1
+fi
+
+if ! grep 'github.com' ~/.ssh/known_hosts; then
+  ssh-keyscan github.com >> ~/.ssh/known_hosts
+fi
+
 # install middleman
 echo 'Installing necessary gems...'
 # download api client gem
