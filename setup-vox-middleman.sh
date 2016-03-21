@@ -124,12 +124,12 @@ fi
 
 # make sure bundler is configured properly
 echo Configuring bundler...
-bundle config path '.bundle'
-bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
-bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
-bundle config build.libv8 "--with-system-v8"
-bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/include --with-ldflags=-L/usr/local/opt/v8-315/lib"
-bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib"
+bundle config path '.bundle' > /dev/null
+bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config build.libv8 "--with-system-v8" > /dev/null
+bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/include --with-ldflags=-L/usr/local/opt/v8-315/lib" > /dev/null
+bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 
 # make sure rbenv permissions are sorted
 echo 'Fixing permissions...'
@@ -138,9 +138,9 @@ sudo chown -R $USER /usr/local
 
 if [ ! -f ~/.ssh/id_rsa ]; then
   echo
-  echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access for
-  echo both HTTPS and SSH. Instructions here:
-  echo   https://help.github.com/articles/set-up-git/#setting-up-git
+  echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access
+  echo for both HTTPS and SSH. Instructions here:
+  echo '  https://help.github.com/articles/set-up-git/#setting-up-git'
   exit 1
 fi
 
