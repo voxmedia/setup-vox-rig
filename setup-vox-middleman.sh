@@ -4,8 +4,6 @@
 # bash -c "$(curl -fsSL https://gist.github.com/ryanmark/9ec33d5d4ee572f7853e/raw/setup-vox-middleman.sh)"
 FAVORITE_RUBY=2.2.2
 
-set -e
-
 echo Setting up Vox Media Middleman rig.
 echo
 
