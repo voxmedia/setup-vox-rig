@@ -87,7 +87,7 @@ fi
 if [ ! -d ~/.rbenv ]; then
   echo
   echo Initialize rbenv...
-  rbenv init
+  rbenv init >/dev/null
   echo >> ~/.bash_profile
   echo "# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
@@ -95,6 +95,7 @@ if [ ! -d ~/.rbenv ]; then
 fi
 
 if [[ "$(which ruby)" = '/usr/bin/ruby' ]]; then
+  echo Load rbenv...
   eval "$(rbenv init -)"
 fi
 
