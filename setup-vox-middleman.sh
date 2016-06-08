@@ -15,9 +15,7 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-if ! xcode-select -p >/dev/null 2>&1; then
-  echo About to install Xcode tools. Please follow the instructions in the popup
-  xcode-select --install
+if xcode-select --install >/dev/null 2>&1; then
   echo
   echo "Once you've completed the Xcode install, press any key to continue"
   read -n 1 -s
@@ -85,7 +83,7 @@ fi
 if [ ! -d ~/.rbenv ]; then
   echo
   echo Initialize rbenv...
-  rbenv init >/dev/null
+  rbenv init >/dev/null 2>&1
   echo >> ~/.bash_profile
   echo "# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
