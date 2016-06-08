@@ -133,6 +133,7 @@ bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/inclu
 bundle config build.libv8 "--with-system-v8" > /dev/null
 bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/include --with-ldflags=-L/usr/local/opt/v8-315/lib" > /dev/null
 bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config --delete build.nokogiri
 
 # make sure rbenv permissions are sorted
 echo 'Fixing permissions...'
