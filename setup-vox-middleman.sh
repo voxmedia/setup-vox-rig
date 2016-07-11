@@ -12,6 +12,19 @@ trap "exit 1" SIGINT;
 # Ask for the administrator password upfront
 sudo -v
 
+if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
+  read -p "Do you have a Chorus account? " -n 1 -r
+  echo    # (optional) move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]
+    INSTALL_CHORUS=true
+  then
+    INSTALL_CHORUS=false
+  fi
+else
+  INSTALL_CHORUS=true
+fi
+
+
 # Keep-alive: update existing `sudo` time stamp until script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
@@ -158,22 +171,31 @@ fi
 
 # install middleman
 echo 'Installing necessary gems...'
-# download api client gem
-cd /tmp
-git clone git@github.com:voxmedia/chorus_api_client-ruby.git
-cd chorus_api_client-ruby
-gem build *gemspec
+
+if [ "$INSTALL_CHORUS" = true ] ; then
+  # download api client gem
+  cd /tmp
+  git clone git@github.com:voxmedia/chorus_api_client-ruby.git
+  cd chorus_api_client-ruby
+  gem build *gemspec
+fi
 
 if [ "$(rbenv global)" == "system" ]; then
   sudo gem install middleman -v "< 4"
   sudo gem install middleman-google_drive octokit
-  # install api client gem
-  sudo gem install *gem
+
+  if [ "$INSTALL_CHORUS" = true ] ; then
+    # install api client gem
+    sudo gem install *gem
+  fi
 else
   gem install middleman -v "< 4"
   gem install middleman-google_drive octokit
-  # install api client gem
-  gem install *gem
+
+  if [ "$INSTALL_CHORUS" = true ] ; then
+    # install api client gem
+    gem install *gem
+  fi
 fi
 
 # cleanup
@@ -218,13 +240,15 @@ fi
 echo
 echo
 
-# add api client id envvar
-if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
-  export CHORUS_API_CLIENT_ID=24
-  echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
-  if [[ "$(basename $SHELL)" != 'bash' ]]; then
-    echo 'Please add this to your shell profile config'
-    echo '    export CHORUS_API_CLIENT_ID=24'
+if [ "$INSTALL_CHORUS" = true ] ; then
+  # add api client id envvar
+  if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
+    export CHORUS_API_CLIENT_ID=24
+    echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
+    if [[ "$(basename $SHELL)" != 'bash' ]]; then
+      echo 'Please add this to your shell profile config'
+      echo '    export CHORUS_API_CLIENT_ID=24'
+    fi
   fi
 fi
 
