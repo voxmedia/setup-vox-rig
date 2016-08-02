@@ -240,6 +240,8 @@ fi
 echo
 echo
 
+# make git clone --recursive the default
+git config --global alias.cloner "clone --recursive"
 
 if [ "$INSTALL_CHORUS" = true ] ; then
   # add api client id envvar
