@@ -240,6 +240,7 @@ fi
 echo
 echo
 
+
 if [ "$INSTALL_CHORUS" = true ] ; then
   # add api client id envvar
   if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
