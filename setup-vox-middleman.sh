@@ -15,9 +15,9 @@ sudo -v
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
   read -p "Do you have a Chorus account? " -n 1 -r
   echo    # (optional) move to a new line
-  if [[ $REPLY =~ ^[Yy]$ ]]
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     INSTALL_CHORUS=true
-  then
+  else
     INSTALL_CHORUS=false
   fi
 else
@@ -43,7 +43,7 @@ if ! hash brew 2>/dev/null; then
   export PATH=.bundle/bin:node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
 
   brew install imagemagick --with-openexr --with-webp
-  brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python
+  brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python heroku
   brew tap homebrew/versions
   brew install homebrew/versions/v8-315
   brew cask install iterm2 xquartz launchrocket gitx
@@ -182,7 +182,7 @@ fi
 
 if [ "$(rbenv global)" == "system" ]; then
   sudo gem install middleman -v "< 4"
-  sudo gem install middleman-google_drive octokit
+  sudo gem install middleman-google_drive octokit kinto_box
 
   if [ "$INSTALL_CHORUS" = true ] ; then
     # install api client gem
@@ -190,7 +190,7 @@ if [ "$(rbenv global)" == "system" ]; then
   fi
 else
   gem install middleman -v "< 4"
-  gem install middleman-google_drive octokit
+  gem install middleman-google_drive octokit kinto_box
 
   if [ "$INSTALL_CHORUS" = true ] ; then
     # install api client gem
@@ -252,6 +252,20 @@ if [ "$INSTALL_CHORUS" = true ] ; then
       echo 'Please add this to your shell profile config'
       echo '    export CHORUS_API_CLIENT_ID=24'
     fi
+  fi
+fi
+
+if [ -z "$KINTO_API_TOKEN" ] ; then
+  # set up kinto token
+  echo 'Setting up your kinto account...'
+  read -p 'Enter a username for kinto: ' kinto_uname
+  read -p 'Enter a password: ' kinto_pwd
+  kinto_token=`echo -n $kinto_uname:$kinto_pwd| openssl base64| tr -d '\n'`
+  export KINTO_API_TOKEN=$kinto_token
+  echo "export KINTO_API_TOKEN=$kinto_token" >> ~/.bash_profile
+  if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo 'Please add this to your shell profile config'
+    echo "    export KINTO_API_TOKEN=$kinto_token"
   fi
 fi
 
