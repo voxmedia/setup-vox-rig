@@ -12,6 +12,25 @@ trap "exit 1" SIGINT;
 # Ask for the administrator password upfront
 sudo -v
 
+# Keep-alive: update existing `sudo` time stamp until script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+if [ ! -f ~/.ssh/id_rsa ]; then
+  echo
+  echo
+  echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access
+  echo for both HTTPS and SSH. Instructions here:
+  echo '  https://help.github.com/articles/set-up-git/#setting-up-git'
+  echo
+  echo After you setup github, please run setup-vox-middleman to finish
+  echo setting up your computer.
+  exit 1
+fi
+
+if ! grep 'github.com' ~/.ssh/known_hosts >/dev/null; then
+  ssh-keyscan github.com >> ~/.ssh/known_hosts
+fi
+
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
   read -p "Do you have a Chorus account? " -n 1 -r
   echo    # (optional) move to a new line
@@ -23,10 +42,6 @@ if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
 else
   INSTALL_CHORUS=true
 fi
-
-
-# Keep-alive: update existing `sudo` time stamp until script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 if xcode-select --install >/dev/null 2>&1; then
   echo
@@ -153,22 +168,6 @@ echo 'Fixing permissions...'
 sudo chown -R $USER $HOME/.rbenv
 sudo chown -R $USER /usr/local
 
-if [ ! -f ~/.ssh/id_rsa ]; then
-  echo
-  echo
-  echo Missing ssh private key ~/.ssh/id_rsa. Please setup github access
-  echo for both HTTPS and SSH. Instructions here:
-  echo '  https://help.github.com/articles/set-up-git/#setting-up-git'
-  echo
-  echo After you setup github, please run setup-vox-middleman to finish
-  echo setting up your computer.
-  exit 1
-fi
-
-if ! grep 'github.com' ~/.ssh/known_hosts >/dev/null; then
-  ssh-keyscan github.com >> ~/.ssh/known_hosts
-fi
-
 # install middleman
 echo 'Installing necessary gems...'
 
@@ -209,8 +208,8 @@ echo
 if [ ! -f "~/.google_client_secrets.json" ]; then
     echo 'Installing Google client_secrets.json...'
     cd /tmp
-    git clone git@github.com:voxmedia/vox-google-drive.git
-    cp vox-google-drive/lib/client_secrets.json ~/.google_client_secrets.json
+    git clone git@github.com:voxmedia/middleman-google-docs-oauth2.git
+    cp middleman-google-docs-oauth2/client_secrets.json ~/.google_client_secrets.json
     cd ~
     rm -Rf /tmp/vox-google-drive
 fi
