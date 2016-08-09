@@ -9,11 +9,14 @@ echo
 
 trap "exit 1" SIGINT;
 
-# Ask for the administrator password upfront
-sudo -v
+if ! hash setup-vox-middleman 2>/dev/null; then
+  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
+  echo 'exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
+  chmod +x /usr/local/bin/setup-vox-middleman
 
-# Keep-alive: update existing `sudo` time stamp until script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  echo
+  echo Added command setup-vox-middleman
+fi
 
 if [ ! -f ~/.ssh/id_rsa ]; then
   echo
@@ -30,6 +33,12 @@ fi
 if ! grep 'github.com' ~/.ssh/known_hosts >/dev/null; then
   ssh-keyscan github.com >> ~/.ssh/known_hosts
 fi
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
   read -p "Do you have a Chorus account? " -n 1 -r
@@ -81,15 +90,6 @@ else
     echo "# Use github's utility in place of git" >> ~/.bash_profile
     echo 'alias git=hub' >> ~/.bash_profile
   fi
-fi
-
-if ! hash setup-vox-middleman 2>/dev/null; then
-  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
-  echo 'exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
-  chmod +x /usr/local/bin/setup-vox-middleman
-
-  echo
-  echo Added command setup-vox-middleman
 fi
 
 # make sure we have rbenv, and not rvm
