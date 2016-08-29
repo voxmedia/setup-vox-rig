@@ -9,16 +9,6 @@ echo
 
 trap "exit 1" SIGINT;
 
-if ! hash setup-vox-middleman 2>/dev/null; then
-  mkdir -p /usr/local/bin
-  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
-  echo 'exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
-  chmod +x /usr/local/bin/setup-vox-middleman
-
-  echo
-  echo Added command setup-vox-middleman
-fi
-
 if [ ! -f ~/.ssh/id_rsa ]; then
   echo
   echo
@@ -91,6 +81,15 @@ else
     echo "# Use github's utility in place of git" >> ~/.bash_profile
     echo 'alias git=hub' >> ~/.bash_profile
   fi
+fi
+
+if ! hash setup-vox-middleman 2>/dev/null; then
+  echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
+  echo 'exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
+  chmod +x /usr/local/bin/setup-vox-middleman
+
+  echo
+  echo Added command setup-vox-middleman
 fi
 
 # make sure we have rbenv, and not rvm
