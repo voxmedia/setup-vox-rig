@@ -10,6 +10,7 @@ echo
 trap "exit 1" SIGINT;
 
 if ! hash setup-vox-middleman 2>/dev/null; then
+  mkdir -p /usr/local/bin
   echo "#!/bin/bash" >/usr/local/bin/setup-vox-middleman
   echo 'exec bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"' >>/usr/local/bin/setup-vox-middleman
   chmod +x /usr/local/bin/setup-vox-middleman
