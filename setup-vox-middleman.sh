@@ -49,6 +49,15 @@ if xcode-select --install >/dev/null 2>&1; then
   read -n 1 -s
 fi
 
+# make sure we have rbenv, and not rvm
+if hash rvm 2>/dev/null; then
+  echo ''
+  echo 'DANGER!!! DANGER!!!'
+  echo 'Please uninstall rvm in order to continue'
+  echo ''
+  exit 1
+fi
+
 if ! hash brew 2>/dev/null; then
   echo
   echo Installing brew...
@@ -63,10 +72,9 @@ if ! hash brew 2>/dev/null; then
   brew install homebrew/versions/v8-315
   brew cask install iterm2 xquartz launchrocket gitx
 
-  echo
-  echo "# Use github's utility in place of git"
+  echo >> ~/.bash_profile
+  echo "# Use github's utility in place of git" >> ~/.bash_profile
   echo 'alias git=hub' >> ~/.bash_profile
-  echo
 else
   echo Update brew...
   brew update
@@ -81,6 +89,12 @@ else
     echo "# Use github's utility in place of git" >> ~/.bash_profile
     echo 'alias git=hub' >> ~/.bash_profile
   fi
+
+  # make sure we have node
+  if ! hash node 2>/dev/null; then
+    echo Installing node...
+    brew install node
+  fi
 fi
 
 if ! hash setup-vox-middleman 2>/dev/null; then
@@ -90,15 +104,6 @@ if ! hash setup-vox-middleman 2>/dev/null; then
 
   echo
   echo Added command setup-vox-middleman
-fi
-
-# make sure we have rbenv, and not rvm
-if hash rvm 2>/dev/null; then
-  echo ''
-  echo 'DANGER!!! DANGER!!!'
-  echo 'Please uninstall rvm in order to continue'
-  echo ''
-  exit 1
 fi
 
 if ! hash rbenv 2>/dev/null; then
