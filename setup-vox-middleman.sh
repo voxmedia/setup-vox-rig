@@ -32,9 +32,9 @@ sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
-  read -p "Do you have a Chorus account? " -n 1 -r
+  read -p "Do you have a Chorus account? " -r
   echo    # (optional) move to a new line
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  if [[ $REPLY =~ ^[Yy] ]]; then
     INSTALL_CHORUS=true
   else
     INSTALL_CHORUS=false
