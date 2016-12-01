@@ -257,12 +257,25 @@ if [ "$INSTALL_CHORUS" = true ] ; then
       echo '    export CHORUS_API_CLIENT_ID=24'
     fi
   fi
+
+  if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
+    echo 'Setting up your Chorus account...'
+    read -p 'Application ID: ' chorus_id
+    read -p 'Application Secret: ' chorus_secret
+    echo "export CHORUS_API_APPLICATION_ID=$chorus_id" >> ~/.bash_profile
+    echo "export CHORUS_API_APPLICATION_SECRET=$chorus_secret" >> ~/.bash_profile
+    if [[ "$(basename $SHELL)" != 'bash' ]]; then
+      echo 'Please add this to your shell profile config'
+      echo "  export CHORUS_API_APPLICATION_ID=$chorus_id"
+      echo "  export CHORUS_API_APPLICATION_SECRET=$chorus_secret"
+    fi
+  fi
 fi
 
 if [ -z "$KINTO_API_TOKEN" ] ; then
   # set up kinto token
-  echo 'Setting up your kinto account...'
-  read -p 'Enter a username for kinto: ' kinto_uname
+  echo 'Setting up your Kinto account...'
+  read -p 'Enter a username for Kinto: ' kinto_uname
   read -p 'Enter a password: ' kinto_pwd
   kinto_token=`echo -n $kinto_uname:$kinto_pwd| openssl base64| tr -d '\n'`
   export KINTO_API_TOKEN=$kinto_token
