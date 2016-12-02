@@ -259,7 +259,7 @@ if [ "$INSTALL_CHORUS" = true ] ; then
   fi
 
   if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
-    echo 'Setting up your Chorus account...'
+    echo 'Setting up your Chorus account... (ask for this info in #growthdev-tools)'
     read -p 'Application ID: ' chorus_id
     read -p 'Application Secret: ' chorus_secret
     echo "export CHORUS_API_APPLICATION_ID=$chorus_id" >> ~/.bash_profile
