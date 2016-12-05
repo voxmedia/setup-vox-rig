@@ -78,14 +78,19 @@ if ! hash brew 2>/dev/null; then
   echo "# Use github's utility in place of git" >> ~/.bash_profile
   echo 'alias git=hub' >> ~/.bash_profile
 else
+  echo
   echo Update brew...
   brew update
 
   if ! hash jq 2>/dev/null; then
+    echo
+    echo Install jq...
     brew install jq
   fi
 
   if ! hash hub 2>/dev/null; then
+    echo
+    echo Install hub...
     brew install hub
     echo >> ~/.bash_profile
     echo "# Use github's utility in place of git" >> ~/.bash_profile
@@ -94,6 +99,7 @@ else
 
   # make sure we have node
   if ! hash node 2>/dev/null; then
+    echo
     echo Installing node...
     brew install node
   fi
@@ -112,7 +118,6 @@ if ! hash rbenv 2>/dev/null; then
   echo
   echo Installing rbenv...
   brew install rbenv
-  echo
 fi
 
 if [ ! -d ~/.rbenv ]; then
@@ -122,13 +127,11 @@ if [ ! -d ~/.rbenv ]; then
   echo >> ~/.bash_profile
   echo "# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
-  echo
 fi
 
-if [[ "$(which ruby)" = '/usr/bin/ruby' ]]; then
-  echo Load rbenv...
-  eval "$(rbenv init -)"
-fi
+echo
+echo Load rbenv...
+eval "$(rbenv init -)"
 
 # make sure we don't have a .ruby-version in our home
 if [ -f ~/.ruby-version ]; then
@@ -139,28 +142,51 @@ fi
 
 # make sure we have the correct ruby installed
 if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
-  echo Update ruby-build
+  echo
+  echo Upgrade ruby-build...
   brew upgrade ruby-build
 
+  echo
   echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
   rbenv install $FAVORITE_RUBY
 
-  eval "$(rbenv init -)"
+  echo
   echo Making sure we have bundler...
   rbenv shell $FAVORITE_RUBY
   gem install bundler
+  rbenv shell $(rbenv global)
 fi
 
 if ! ruby --version|grep "2\.[234]\." >/dev/null; then
+  echo
   echo "Default ruby needs to be >2.2, setting it to $FAVORITE_RUBY"
   rbenv global $FAVORITE_RUBY
 fi
 
-if ! hash bundle 2>/dev/null; then
-  gem install bundler
+# make sure rbenv permissions are sorted
+echo
+echo 'Fixing permissions...'
+sudo chown -R $USER $HOME/.rbenv
+sudo chown -R $USER /usr/local
+
+# install gems
+function sgem {
+  if [ "$(rbenv global)" == "system" ]; then
+    sudo gem "$@"
+  else
+    gem "$@"
+  fi
+}
+
+if ! hash bundle 2>/dev/null || ! bundle 2>/dev/null; then
+  echo
+  echo Installing bundler...
+  sgem install bundler
+  rbenv rehash
 fi
 
 # make sure bundler is configured properly
+echo
 echo Configuring bundler...
 bundle config path '.bundle' > /dev/null
 bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
@@ -170,49 +196,26 @@ bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/includ
 bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config --delete build.nokogiri
 
-# make sure rbenv permissions are sorted
-echo 'Fixing permissions...'
-sudo chown -R $USER $HOME/.rbenv
-sudo chown -R $USER /usr/local
-
-# install middleman
-echo 'Installing necessary gems...'
-
-function install_gem {
-  if [ "$(rbenv global)" == "system" ]; then
-    sudo gem install "$@"
-  else
-    gem install "$@"
-  fi
-}
+echo
+echo Installing gems...
+# make gem specific_install URL work
+sgem install specific_install
 
 if [ "$INSTALL_CHORUS" = true ] ; then
-  # download api client gem
-  cd /tmp
-  git clone git@github.com:voxmedia/chorus_api_client-ruby.git
-  cd chorus_api_client-ruby
-  git checkout v1.0.4
-  gem build *gemspec
-
-  install_gem *gem
-
-  # cleanup
-  cd ~
-  rm -Rf /tmp/chorus_api_client-ruby
+  sgem specific_install git@github.com:voxmedia/omniauth-chorus.git
+  sgem specific_install git@github.com:voxmedia/chorus_api_client-ruby.git
 fi
 
-install_gem middleman -v "< 4"
-install_gem middleman-google_drive octokit kinto_box
-
-echo
-echo
+sgem install middleman -v "< 4"
+sgem install middleman-google_drive octokit kinto_box
 
 # setup client secrets
 if [ ! -f "~/.google_client_secrets.json" ]; then
+  echo
   echo 'Installing Google client_secrets.json...'
   rm -Rf /tmp/middleman-google-docs-oauth2
   cd /tmp
-  git clone git@github.com:voxmedia/middleman-google-docs-oauth2.git
+  git clone git@github.com:voxmedia/middleman-google-docs-oauth2.git >/dev/null
   cp middleman-google-docs-oauth2/client_secrets.json ~/.google_client_secrets.json
   cd ~
   rm -Rf /tmp/middleman-google-docs-oauth2
@@ -221,27 +224,24 @@ fi
 echo
 echo
 
-# setup .middleman if doesn't exist
-if [ ! -d ~/.middleman ]; then
-    mkdir ~/.middleman
-fi
-
 if [ -d ~/.middleman/voxmedia ]; then
-    echo 'Updating Vox Media Middleman template...'
-    # update this repo in .middleman if exists
-    cd ~/.middleman/voxmedia
-    git checkout . >/dev/null
-    git checkout master >/dev/null
-    git pull origin master >/dev/null
+  echo
+  echo 'Updating Vox Media Middleman template...'
+  # update this repo in .middleman if exists
+  cd ~/.middleman/voxmedia
+  git checkout . >/dev/null
+  git checkout master >/dev/null
+  git pull origin master >/dev/null
 else
-    echo 'Installing Vox Media Middleman template...'
-    # clone this repo into .middleman if doesn't exist
-    cd ~/.middleman
-    git clone git@github.com:voxmedia/voxmedia-middleman-template.git voxmedia
+  echo
+  echo 'Installing Vox Media Middleman template...'
+  mkdir -p ~/.middleman/voxmedia
+  # clone this repo into .middleman if doesn't exist
+  cd ~/.middleman
+  git clone git@github.com:voxmedia/voxmedia-middleman-template.git voxmedia >/dev/null
 fi
 
-echo
-echo
+cd ~
 
 # make git clone --recursive the default
 git config --global alias.cloner "clone --recursive"
@@ -258,6 +258,7 @@ if [ "$INSTALL_CHORUS" = true ] ; then
   fi
 
   if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
+    echo
     echo 'Setting up your Chorus account... (ask for this info in #growthdev-tools)'
     read -p 'Application ID: ' chorus_id
     read -p 'Application Secret: ' chorus_secret
@@ -273,6 +274,7 @@ fi
 
 if [ -z "$KINTO_API_TOKEN" ] ; then
   # set up kinto token
+  echo
   echo 'Setting up your Kinto account...'
   read -p 'Enter a username for Kinto: ' kinto_uname
   read -p 'Enter a password: ' kinto_pwd
@@ -286,10 +288,13 @@ if [ -z "$KINTO_API_TOKEN" ] ; then
 fi
 
 # display instructions
-echo 'You must start a new terminal session for changes to take affect.'
-echo ''
-echo 'You should be all set. To start a new editorial app, enter the following'
-echo 'and follow the instructions.'
+echo
+echo
+echo You must start a new terminal session for changes to take affect.
+echo
+echo You should be all set. To start a new editorial app, enter the following
+echo and follow the instructions.
 echo '    middleman init -T voxmedia my-new-app'
 echo
-echo 'Run setup-vox-middleman again at any time to update your install.'
+echo Run setup-vox-middleman again at any time to update your install.
+echo
