@@ -145,6 +145,7 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
   rbenv install $FAVORITE_RUBY
 
+  eval "$(rbenv init -)"
   echo Making sure we have bundler...
   rbenv shell $FAVORITE_RUBY
   gem install bundler
