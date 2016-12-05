@@ -191,6 +191,7 @@ if [ "$INSTALL_CHORUS" = true ] ; then
   cd /tmp
   git clone git@github.com:voxmedia/chorus_api_client-ruby.git
   cd chorus_api_client-ruby
+  git checkout v1.0.4
   gem build *gemspec
 
   install_gem *gem
