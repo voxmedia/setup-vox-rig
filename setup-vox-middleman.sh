@@ -2,7 +2,9 @@
 #
 # To run this script, enter this into your terminal:
 # bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"
-FAVORITE_RUBY=2.2.2
+set -eu
+
+FAVORITE_RUBY=2.2.5
 
 echo Setting up Vox Media Middleman rig.
 echo
@@ -138,7 +140,6 @@ fi
 # make sure we have the correct ruby installed
 if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo Update ruby-build
-  brew update
   brew upgrade ruby-build
 
   echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
@@ -176,47 +177,43 @@ sudo chown -R $USER /usr/local
 # install middleman
 echo 'Installing necessary gems...'
 
+function install_gem {
+  if [ "$(rbenv global)" == "system" ]; then
+    sudo gem install "$@"
+  else
+    gem install "$@"
+  fi
+}
+
 if [ "$INSTALL_CHORUS" = true ] ; then
   # download api client gem
   cd /tmp
   git clone git@github.com:voxmedia/chorus_api_client-ruby.git
   cd chorus_api_client-ruby
   gem build *gemspec
+
+  install_gem *gem
+
+  # cleanup
+  cd ~
+  rm -Rf /tmp/chorus_api_client-ruby
 fi
 
-if [ "$(rbenv global)" == "system" ]; then
-  sudo gem install middleman -v "< 4"
-  sudo gem install middleman-google_drive octokit kinto_box
-
-  if [ "$INSTALL_CHORUS" = true ] ; then
-    # install api client gem
-    sudo gem install *gem
-  fi
-else
-  gem install middleman -v "< 4"
-  gem install middleman-google_drive octokit kinto_box
-
-  if [ "$INSTALL_CHORUS" = true ] ; then
-    # install api client gem
-    gem install *gem
-  fi
-fi
-
-# cleanup
-cd ~
-rm -Rf /tmp/chorus_api_client-ruby
+install_gem middleman -v "< 4"
+install_gem middleman-google_drive octokit kinto_box
 
 echo
 echo
 
 # setup client secrets
 if [ ! -f "~/.google_client_secrets.json" ]; then
-    echo 'Installing Google client_secrets.json...'
-    cd /tmp
-    git clone git@github.com:voxmedia/middleman-google-docs-oauth2.git
-    cp middleman-google-docs-oauth2/client_secrets.json ~/.google_client_secrets.json
-    cd ~
-    rm -Rf /tmp/vox-google-drive
+  echo 'Installing Google client_secrets.json...'
+  rm -Rf /tmp/middleman-google-docs-oauth2
+  cd /tmp
+  git clone git@github.com:voxmedia/middleman-google-docs-oauth2.git
+  cp middleman-google-docs-oauth2/client_secrets.json ~/.google_client_secrets.json
+  cd ~
+  rm -Rf /tmp/middleman-google-docs-oauth2
 fi
 
 echo
