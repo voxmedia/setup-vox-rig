@@ -237,6 +237,7 @@ if [ -z "$CHORUS_API_CLIENT_ID" ]; then
   export CHORUS_API_CLIENT_ID=24
   echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
   if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo
     echo 'Please add this to your shell profile config'
     echo '    export CHORUS_API_CLIENT_ID=24'
   fi
@@ -250,6 +251,7 @@ if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
   echo "export CHORUS_API_APPLICATION_ID=$chorus_id" >> ~/.bash_profile
   echo "export CHORUS_API_APPLICATION_SECRET=$chorus_secret" >> ~/.bash_profile
   if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo
     echo 'Please add this to your shell profile config'
     echo "  export CHORUS_API_APPLICATION_ID=$chorus_id"
     echo "  export CHORUS_API_APPLICATION_SECRET=$chorus_secret"
