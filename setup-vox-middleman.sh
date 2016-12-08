@@ -2,7 +2,7 @@
 #
 # To run this script, enter this into your terminal:
 # bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"
-set -eu
+set -e
 
 FAVORITE_RUBY=2.2.5
 
@@ -32,18 +32,6 @@ sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
-  read -p "Do you have a Chorus account? " -r
-  echo    # (optional) move to a new line
-  if [[ $REPLY =~ ^[Yy] ]]; then
-    INSTALL_CHORUS=true
-  else
-    INSTALL_CHORUS=false
-  fi
-else
-  INSTALL_CHORUS=true
-fi
 
 if xcode-select --install >/dev/null 2>&1; then
   echo
@@ -201,10 +189,8 @@ echo Installing gems...
 # make gem specific_install URL work
 sgem install specific_install
 
-if [ "$INSTALL_CHORUS" = true ] ; then
-  sgem specific_install git@github.com:voxmedia/omniauth-chorus.git
-  sgem specific_install git@github.com:voxmedia/chorus_api_client-ruby.git
-fi
+sgem specific_install git@github.com:voxmedia/omniauth-chorus.git
+sgem specific_install git@github.com:voxmedia/chorus_api_client-ruby.git
 
 sgem install middleman -v "< 4"
 sgem install middleman-google_drive octokit kinto_box
@@ -246,29 +232,27 @@ cd ~
 # make git clone --recursive the default
 git config --global alias.cloner "clone --recursive"
 
-if [ "$INSTALL_CHORUS" = true ] ; then
-  # add api client id envvar
-  if [[ ! $CHORUS_API_CLIENT_ID -eq '24' ]]; then
-    export CHORUS_API_CLIENT_ID=24
-    echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
-    if [[ "$(basename $SHELL)" != 'bash' ]]; then
-      echo 'Please add this to your shell profile config'
-      echo '    export CHORUS_API_CLIENT_ID=24'
-    fi
+# add api client id envvar
+if [ -z "$CHORUS_API_CLIENT_ID" ]; then
+  export CHORUS_API_CLIENT_ID=24
+  echo 'export CHORUS_API_CLIENT_ID=24' >> ~/.bash_profile
+  if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo 'Please add this to your shell profile config'
+    echo '    export CHORUS_API_CLIENT_ID=24'
   fi
+fi
 
-  if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
-    echo
-    echo 'Setting up your Chorus account... (ask for this info in #growthdev-tools)'
-    read -p 'Application ID: ' chorus_id
-    read -p 'Application Secret: ' chorus_secret
-    echo "export CHORUS_API_APPLICATION_ID=$chorus_id" >> ~/.bash_profile
-    echo "export CHORUS_API_APPLICATION_SECRET=$chorus_secret" >> ~/.bash_profile
-    if [[ "$(basename $SHELL)" != 'bash' ]]; then
-      echo 'Please add this to your shell profile config'
-      echo "  export CHORUS_API_APPLICATION_ID=$chorus_id"
-      echo "  export CHORUS_API_APPLICATION_SECRET=$chorus_secret"
-    fi
+if [ -z "$CHORUS_API_APPLICATION_ID" ] ; then
+  echo
+  echo 'Setting up your Chorus account... (ask for this info in #growthdev-tools)'
+  read -p 'Application ID: ' chorus_id
+  read -p 'Application Secret: ' chorus_secret
+  echo "export CHORUS_API_APPLICATION_ID=$chorus_id" >> ~/.bash_profile
+  echo "export CHORUS_API_APPLICATION_SECRET=$chorus_secret" >> ~/.bash_profile
+  if [[ "$(basename $SHELL)" != 'bash' ]]; then
+    echo 'Please add this to your shell profile config'
+    echo "  export CHORUS_API_APPLICATION_ID=$chorus_id"
+    echo "  export CHORUS_API_APPLICATION_SECRET=$chorus_secret"
   fi
 fi
 
