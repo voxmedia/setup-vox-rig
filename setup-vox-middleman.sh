@@ -137,7 +137,7 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   set -e
 
   echo
-  echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
+  echo "Installing our favorite Ruby ($FAVORITE_RUBY). This may take 15 - 30 minutes..."
   rbenv install $FAVORITE_RUBY
 
   echo
