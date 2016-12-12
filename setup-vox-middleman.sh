@@ -132,7 +132,9 @@ fi
 if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo
   echo Upgrade ruby-build...
+  set +e
   brew upgrade ruby-build
+  set -e
 
   echo
   echo "Installing our favorite Ruby ($FAVORITE_RUBY)..."
