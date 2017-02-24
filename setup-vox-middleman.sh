@@ -143,7 +143,7 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
   echo
   echo Making sure we have bundler...
   rbenv shell $FAVORITE_RUBY
-  gem install bundler
+  gem install bundler rubocop rdoc
   rbenv shell $(rbenv global)
 fi
 
@@ -171,7 +171,7 @@ function sgem {
 if ! hash bundle 2>/dev/null || ! bundle 2>/dev/null; then
   echo
   echo Installing bundler...
-  sgem install bundler
+  sgem install bundler rubocop rdoc
   rbenv rehash
 fi
 
