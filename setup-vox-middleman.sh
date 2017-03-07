@@ -112,7 +112,7 @@ if [ ! -d ~/.rbenv ]; then
   echo
   echo Initialize rbenv...
   rbenv init >/dev/null 2>&1
-  echo >> ~/.bash_profile
+  # echo >> ~/.bash_profile
   echo "# Load rbenv stuff" >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 fi
