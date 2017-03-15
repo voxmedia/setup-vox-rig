@@ -57,7 +57,7 @@ if ! hash brew 2>/dev/null; then
   export PATH=.bundle/bin:node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
 
   brew install imagemagick --with-openexr --with-webp
-  brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python heroku
+  brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python heroku libffi
   brew tap homebrew/versions
   brew install homebrew/versions/v8-315
   brew cask install iterm2 xquartz launchrocket gitx
