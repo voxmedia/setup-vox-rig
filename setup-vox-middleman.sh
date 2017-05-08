@@ -193,6 +193,7 @@ sgem install specific_install
 
 sgem specific_install git@github.com:voxmedia/omniauth-chorus.git
 sgem specific_install git@github.com:voxmedia/chorus_api_client-ruby.git
+sgem specific_install git@github.com:voxmedia/autotune-client.git
 
 sgem install middleman -v "< 4"
 sgem install middleman-google_drive octokit kinto_box
@@ -272,6 +273,26 @@ if [ -z "$KINTO_API_TOKEN" ] ; then
   if [[ "$(basename $SHELL)" != 'bash' ]]; then
     echo 'Please add this to your shell profile config'
     echo "    export KINTO_API_TOKEN=$kinto_token"
+  fi
+fi
+
+# Add Autotune settings
+if [ -z "$AUTOTUNE_API_KEY" ] ; then
+  echo
+  echo 'Configuring Autotune... (ask for this info in #growthdev-rig-support)'
+  # Set user API key
+  read -p "What's your Autotune API key? " autotune_api_key
+  export AUTOTUNE_API_KEY=$autotune_api_key
+  echo "export AUTOTUNE_API_KEY=$autotune_api_key" >> ~.bash_profile
+  # Set Autotune server
+  autotune_server='https://autotune.voxmedia.com'
+  export AUTOTUNE_SERVER=$autotune_server
+  echo "export AUTOTUNE_SERVER=$autotune_server" >> ~.bash_profile
+  # Manual prompt for non-bash shells
+  if [[ "$(basename $SHELL)" != 'bash' ]] ; then
+    echo 'Please add these to your shell config:'
+    echo "    export AUTOTUNE_API_KEY=$autotune_key"
+    echo "    export AUTOTUNE_SERVER=$autotune_server"
   fi
 fi
 
