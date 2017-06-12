@@ -59,7 +59,7 @@ if ! hash brew 2>/dev/null; then
   brew install imagemagick --with-openexr --with-webp
   brew install openssl git hub aspell jq editorconfig ctags node libevent libsass python heroku libffi
   brew tap homebrew/versions
-  brew install homebrew/versions/v8-315
+  brew install v8@3.15
   brew cask install iterm2 xquartz launchrocket gitx
 
   echo >> ~/.bash_profile
