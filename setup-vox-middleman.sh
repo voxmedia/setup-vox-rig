@@ -157,7 +157,8 @@ fi
 echo
 echo 'Fixing permissions...'
 sudo chown -R $USER $HOME/.rbenv
-sudo chown -R $USER /usr/local
+# sometimes breaks in recent mac os x
+#sudo chown -R $USER /usr/local
 
 # install gems
 function sgem {
