@@ -192,6 +192,7 @@ echo Installing gems...
 # make gem specific_install URL work
 sgem install specific_install
 
+sgem specific_install git@github.com:voxmedia/omniauth-oauth2.git
 sgem specific_install git@github.com:voxmedia/omniauth-chorus.git
 sgem specific_install git@github.com:voxmedia/chorus_api_client-ruby.git
 sgem specific_install git@github.com:voxmedia/autotune-client.git
