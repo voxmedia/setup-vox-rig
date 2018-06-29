@@ -58,9 +58,8 @@ if ! hash brew 2>/dev/null; then
 
   brew install imagemagick --with-openexr --with-webp
   brew install openssl git aspell jq editorconfig ctags node libevent libsass python heroku libffi libyaml
-  brew tap homebrew/versions
   brew install v8@3.15
-  brew cask install iterm2 xquartz launchrocket rowanj-gitx
+  brew cask install iterm2 xquartz rowanj-gitx
 else
   echo
   echo Update brew...
@@ -171,7 +170,7 @@ bundle config path '.bundle' > /dev/null
 bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config build.libv8 "--with-system-v8" > /dev/null
-bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8-315/include --with-ldflags=-L/usr/local/opt/v8-315/lib" > /dev/null
+bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8@315/include --with-ldflags=-L/usr/local/opt/v8@315/lib" > /dev/null
 bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config --delete build.nokogiri
 
