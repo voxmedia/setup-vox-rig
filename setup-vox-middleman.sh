@@ -170,7 +170,7 @@ bundle config path '.bundle' > /dev/null
 bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config build.libv8 "--with-system-v8" > /dev/null
-bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8@315/include --with-ldflags=-L/usr/local/opt/v8@315/lib" > /dev/null
+bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8@3.15/include --with-ldflags=-L/usr/local/opt/v8@3.15/lib" > /dev/null
 bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config --delete build.nokogiri
 
