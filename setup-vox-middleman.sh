@@ -182,6 +182,9 @@ sgem install specific_install
 sgem specific_install https://github.com/voxmedia/autotune-client.git
 sgem specific_install https://github.com/voxmedia/autotune-client-vox.git
 
+sgem uninstall middleman -v "> 4"
+sgem uninstall middleman-cli -v "> 4"
+sgem uninstall middleman-core -v "> 4"
 sgem install middleman -v "< 4"
 sgem install octokit kinto_box
 
@@ -212,14 +215,14 @@ if [ -z "$KINTO_API_TOKEN" ] ; then
 fi
 
 # Add Autotune settings
-if [ -z "$AUTOTUNE_SERVER" ] ; then
+if [ -z "$AUTOTUNE_API_SERVER" ] ; then
   # Set Autotune server
   autotune_server='https://autotune.voxmedia.com'
-  echo "export AUTOTUNE_SERVER=$autotune_server" >> ~/.bash_profile
+  echo "export AUTOTUNE_API_SERVER=$autotune_server" >> ~/.bash_profile
   # Manual prompt for non-bash shells
   if [[ "$(basename $SHELL)" != 'bash' ]] ; then
     echo 'Please add these to your shell config:'
-    echo "    export AUTOTUNE_SERVER=$autotune_server"
+    echo "    export AUTOTUNE_API_SERVER=$autotune_server"
   fi
 fi
 
