@@ -161,7 +161,6 @@ if ! hash bundle 2>/dev/null || ! bundle 2>/dev/null; then
   echo
   echo Installing bundler...
   sgem install bundler -v "< 2"
-  sgem install rubocop rdoc
   rbenv rehash
 fi
 
@@ -188,7 +187,9 @@ sgem uninstall middleman -v "> 4"
 sgem uninstall middleman-cli -v "> 4"
 sgem uninstall middleman-core -v "> 4"
 sgem install middleman -v "< 4"
-sgem install octokit kinto_box
+sgem install octokit kinto_box rubocop rdoc
+
+rbenv rehash
 
 echo
 echo
