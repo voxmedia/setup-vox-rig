@@ -231,7 +231,7 @@ fi
 # display instructions
 echo
 echo
-echo You must start a new terminal session for changes to take affect.
+echo You must start a new terminal session for changes to take effect.
 echo
 echo You should be all set. To start a new editorial app, enter the following
 echo and follow the instructions.
