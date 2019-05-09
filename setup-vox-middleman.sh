@@ -161,7 +161,7 @@ if ! hash bundle 2>/dev/null || ! bundle 2>/dev/null; then
   echo
   echo Installing bundler...
   sgem install bundler -v "< 2"
-  sgem rubocop rdoc
+  sgem install rubocop rdoc
   rbenv rehash
 fi
 
