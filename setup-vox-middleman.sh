@@ -4,7 +4,7 @@
 # bash -c "$(curl -fsSL https://raw.githubusercontent.com/voxmedia/setup-vox-rig/master/setup-vox-middleman.sh)"
 set -e
 
-FAVORITE_RUBY=2.2.10
+FAVORITE_RUBY=2.5.5
 
 echo Setting up Vox Media Middleman rig.
 echo
@@ -58,8 +58,6 @@ if ! hash brew 2>/dev/null; then
 
   brew install imagemagick --with-openexr --with-webp
   brew install openssl git aspell jq editorconfig ctags node libevent libsass python heroku libffi libyaml
-  brew install v8@3.15
-  brew cask install iterm2 xquartz rowanj-gitx
 else
   echo
   echo Update brew...
@@ -102,11 +100,9 @@ if [ ! -d ~/.rbenv ]; then
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 fi
 
-if ! echo $PATH|grep '.rbenv/shims' >/dev/null; then
-  echo
-  echo Load rbenv...
-  eval "$(rbenv init -)"
-fi
+echo
+echo Load rbenv...
+eval "$(rbenv init -)"
 
 # make sure we don't have a .ruby-version in our home
 if [ -f ~/.ruby-version ]; then
@@ -129,38 +125,25 @@ if ! rbenv versions|grep $FAVORITE_RUBY >/dev/null; then
 
   echo
   echo Making sure we have bundler...
+  rbenv global $FAVORITE_RUBY
   rbenv shell $FAVORITE_RUBY
   gem install bundler -v "< 2"
-  gem install rubocop rdoc
-  rbenv shell $(rbenv global)
-fi
-
-if ! ruby --version|grep "2\.[234]\." >/dev/null; then
-  echo
-  echo "Default ruby needs to be >2.2, setting it to $FAVORITE_RUBY"
-  rbenv global $FAVORITE_RUBY
+  rbenv rehash
 fi
 
 # make sure rbenv permissions are sorted
 echo
 echo 'Fixing permissions...'
 sudo chown -R $USER $HOME/.rbenv
-# sometimes breaks in recent mac os x
-#sudo chown -R $USER /usr/local
 
-# install gems
-function sgem {
-  if [ "$(rbenv global)" == "system" ]; then
-    sudo gem "$@"
-  else
-    gem "$@"
-  fi
-}
+echo
+echo Setting default ruby to $FAVORITE_RUBY
+rbenv global $FAVORITE_RUBY
+rbenv shell $FAVORITE_RUBY
 
 if ! hash bundle 2>/dev/null || ! bundle 2>/dev/null; then
-  echo
   echo Installing bundler...
-  sgem install bundler -v "< 2"
+  gem install bundler -v "< 2"
   rbenv rehash
 fi
 
@@ -168,26 +151,27 @@ fi
 echo
 echo Configuring bundler...
 bundle config path '.bundle' > /dev/null
-bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
-bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
-bundle config build.libv8 "--with-system-v8" > /dev/null
-bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8@3.15/include --with-ldflags=-L/usr/local/opt/v8@3.15/lib" > /dev/null
-bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config --delete build.openssl
+#bundle config build.openssl "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config --delete build.eventmachine
+#bundle config build.eventmachine "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
+bundle config --delete build.libv8
+#bundle config build.libv8 "--with-system-v8" > /dev/null
+bundle config --delete build.therubyracer
+#bundle config build.therubyracer "--with-cppflags=-I/usr/local/opt/v8@3.15/include --with-ldflags=-L/usr/local/opt/v8@3.15/lib" > /dev/null
+bundle config --delete build.puma
+#bundle config build.puma "--with-cppflags=-I/usr/local/opt/openssl/include --with-ldflags=-L/usr/local/opt/openssl/lib" > /dev/null
 bundle config --delete build.nokogiri
 
 echo
 echo Installing gems...
 # make gem specific_install URL work
-sgem install specific_install
+gem install bundler -v "< 2"
+gem install specific_install octokit kinto_box rubocop
+gem specific_install https://github.com/voxmedia/autotune-client.git
+gem specific_install https://github.com/voxmedia/autotune-client-vox.git
 
-sgem specific_install https://github.com/voxmedia/autotune-client.git
-sgem specific_install https://github.com/voxmedia/autotune-client-vox.git
-
-sgem uninstall middleman -v "> 4"
-sgem uninstall middleman-cli -v "> 4"
-sgem uninstall middleman-core -v "> 4"
-sgem install middleman -v "< 4"
-sgem install octokit kinto_box rubocop rdoc
+gem uninstall middleman middleman-cli middleman-core
 
 rbenv rehash
 
@@ -206,6 +190,7 @@ if [ -z "$KINTO_API_TOKEN" ] ; then
   echo Setting up your Kinto account.
   echo To create a new account, enter a username and password of your choosing.
   echo To use an existing account, enter your existing username and password.
+  echo "If you don't need kinto or want to setup your account later, just hit enter"
   echo "Don't forget your username and password, there is no password reset!"
   read -p 'Enter username for Kinto: ' kinto_uname
   read -p 'Enter password: ' kinto_pwd
